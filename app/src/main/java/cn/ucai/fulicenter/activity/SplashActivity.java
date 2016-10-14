@@ -1,7 +1,6 @@
 package cn.ucai.fulicenter.activity;
 
-import android.content.Intent;
-import android.os.SystemClock;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -19,7 +18,7 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        new Thread(new Runnable() {
+        /*new Thread(new Runnable() {
             @Override
             public void run() {
                 long currentTime = System.currentTimeMillis();
@@ -36,7 +35,13 @@ public class SplashActivity extends AppCompatActivity {
                 MFGT.gotoMainActivity(SplashActivity.this);
                 MFGT.finish(SplashActivity.this);
             }
-        }).start();
-
+        }).start();*/
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                MFGT.gotoMainActivity(SplashActivity.this);
+                finish();
+            }
+        },splashTime);
     }
 }
