@@ -1,9 +1,11 @@
 package cn.ucai.fulicenter.bean;
 
+import java.io.Serializable;
+
 /**
  * Created by 11039 on 2016/10/13.
  */
-public class ColorBean {
+public class ColorBean implements Serializable {
     public ColorBean() {
     }
 

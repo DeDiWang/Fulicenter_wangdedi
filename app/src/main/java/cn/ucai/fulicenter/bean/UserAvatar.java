@@ -1,9 +1,11 @@
 package cn.ucai.fulicenter.bean;
 
+import java.io.Serializable;
+
 /**
  * Created by 11039 on 2016/10/13.
  */
-public class UserAvatar {
+public class UserAvatar implements Serializable {
     /**
      * muserName : a952702
      * muserNick : 彭鹏

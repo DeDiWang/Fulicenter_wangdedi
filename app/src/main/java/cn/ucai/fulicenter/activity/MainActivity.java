@@ -1,19 +1,124 @@
 package cn.ucai.fulicenter.activity;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import cn.ucai.fulicenter.R;
+import cn.ucai.fulicenter.fragment.FragmentBoutique;
+import cn.ucai.fulicenter.fragment.FragmentCart;
+import cn.ucai.fulicenter.fragment.FragmentCategory;
+import cn.ucai.fulicenter.fragment.FragmentMe;
+import cn.ucai.fulicenter.fragment.FragmentNewGoods;
 
 public class MainActivity extends AppCompatActivity {
-
+    FragmentNewGoods mFragmentNewGoods;
+    FragmentBoutique mFragmentBoutique;
+    FragmentCategory mFragmentCategory;
+    FragmentCart mFragmentCart;
+    FragmentMe mFragmentMe;
+    List<Fragment> mFragmentList;
+    int index = 0;//默认fragment的下标
+    @BindView(R.id.fragmentContainer)
+    FrameLayout mfragmentContainer;
+    @BindView(R.id.rbNewGoods)
+    RadioButton mrbNewGoods;
+    @BindView(R.id.rbBoutique)
+    RadioButton mrbBoutique;
+    @BindView(R.id.rbCategory)
+    RadioButton mrbCategory;
+    @BindView(R.id.rbCart)
+    RadioButton mrbCart;
+    @BindView(R.id.tvCartHint)
+    TextView mtvCartHint;
+    @BindView(R.id.rbPersonalCenter)
+    RadioButton mrbMe;
+    @BindView(R.id.radioGroup)
+    RadioGroup mradioGroup;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
+        initView();
     }
-    public void onCheckedChange(View view){
 
+
+    private void initView() {
+        mFragmentNewGoods = new FragmentNewGoods();
+        mFragmentBoutique = new FragmentBoutique();
+        mFragmentCategory = new FragmentCategory();
+        mFragmentCart = new FragmentCart();
+        mFragmentMe = new FragmentMe();
+        mFragmentList = new ArrayList<>();
+        mFragmentList.add(mFragmentNewGoods);
+        mFragmentList.add(mFragmentBoutique);
+        mFragmentList.add(mFragmentCategory);
+        mFragmentList.add(mFragmentCart);
+        mFragmentList.add(mFragmentMe);
+        //设置默认显示的fragment
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.add(R.id.fragmentContainer, mFragmentNewGoods).show(mFragmentNewGoods).commit();
+
+
+    }
+
+    public void onCheckedChange(View view) {
+        //实现购物车的RadioButton与其它四个RadioButton的互斥效果
+        onlyOneChecked((RadioButton) view);
+        switch (view.getId()) {
+            case R.id.rbNewGoods:
+                index = 0;
+                break;
+            case R.id.rbBoutique:
+                index = 1;
+                break;
+            case R.id.rbCategory:
+                index = 2;
+                break;
+            case R.id.rbCart:
+                index = 3;
+                break;
+            case R.id.rbPersonalCenter:
+                index = 4;
+                break;
+        }
+        switchFragment(index);
+    }
+    //跳转Fragment
+    int currentIndex = 0;//记录当前的Fragment下标
+    private void switchFragment(int index) {
+        if (index == currentIndex) {
+            return;
+        }
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        Fragment fragment = mFragmentList.get(index);
+        if (!fragment.isAdded()) {
+            ft.add(R.id.fragmentContainer, fragment);
+        }
+        ft.show(fragment).hide(mFragmentList.get(currentIndex)).commit();
+        currentIndex = index;
+    }
+    private void onlyOneChecked(Button view) {
+        if (view == mrbCart) {
+            mrbNewGoods.setChecked(false);
+            mrbCategory.setChecked(false);
+            mrbBoutique.setChecked(false);
+            mrbMe.setChecked(false);
+        } else {
+            mrbCart.setChecked(false);
+        }
     }
 }

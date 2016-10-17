@@ -1,9 +1,11 @@
 package cn.ucai.fulicenter.bean;
 
+import java.io.Serializable;
+
 /**
  * Created by 11039 on 2016/10/13.
  */
-public class AlbumsBean {
+public class AlbumsBean implements Serializable {
     public AlbumsBean() {
     }
 

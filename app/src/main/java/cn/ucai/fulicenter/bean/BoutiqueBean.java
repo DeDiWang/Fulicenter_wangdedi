@@ -1,9 +1,11 @@
 package cn.ucai.fulicenter.bean;
 
+import java.io.Serializable;
+
 /**
  * Created by 11039 on 2016/10/13.
  */
-public class BoutiqueBean {
+public class BoutiqueBean implements Serializable {
     /**
      * id : 262
      * title : 不一样的新妆，不一样的美丽

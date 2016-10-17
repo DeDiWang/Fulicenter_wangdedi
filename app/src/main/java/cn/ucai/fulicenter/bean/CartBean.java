@@ -1,96 +1,96 @@
 package cn.ucai.fulicenter.bean;
 
+import java.io.Serializable;
+
 /**
  * Created by 11039 on 2016/10/13.
  */
-public class CartBean {
-    public CartBean() {
-    }
 
-    @Override
-    public String toString() {
-        return "CartBean{" +
-                "id=" + id +
-                ", userName='" + userName + '\'' +
-                ", goodsId=" + goodsId +
-                ", goods=" + goods +
-                ", count=" + count +
-                ", isChecked=" + isChecked +
-                ", checked=" + checked +
-                '}';
-    }
+public class CartBean implements Serializable {
+        private int id=0;
+        private String userName;
+        private int goodsId;
+        private int count;
+        private boolean isChecked;
+        private GoodsDetailsBean goods;
 
-    /**
-     * id : 35
-     * userName : a952702
-     * goodsId : 7677
-     * goods : null
-     * count : 2
-     * isChecked : false
-     * checked : false
-     */
+        public int getId() {
+            return id;
+        }
 
-    private int id;
-    private String userName;
-    private int goodsId;
-    private Object goods;
-    private int count;
-    private boolean isChecked;
-    private boolean checked;
+        public void setId(int id) {
+            this.id = id;
+        }
 
-    public int getId() {
-        return id;
-    }
+        public String getUserName() {
+            return userName;
+        }
 
-    public void setId(int id) {
-        this.id = id;
-    }
+        public void setUserName(String userName) {
+            this.userName = userName;
+        }
 
-    public String getUserName() {
-        return userName;
-    }
+        public int getGoodsId() {
+            return goodsId;
+        }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
+        public void setGoodsId(int goodsId) {
+            this.goodsId = goodsId;
+        }
 
-    public int getGoodsId() {
-        return goodsId;
-    }
+        public int getCount() {
+            return count;
+        }
 
-    public void setGoodsId(int goodsId) {
-        this.goodsId = goodsId;
-    }
+        public void setCount(int count) {
+            this.count = count;
+        }
 
-    public Object getGoods() {
-        return goods;
-    }
+        public boolean isChecked() {
+            return isChecked;
+        }
 
-    public void setGoods(Object goods) {
-        this.goods = goods;
-    }
+        public void setChecked(boolean checked) {
+            this.isChecked = checked;
+        }
 
-    public int getCount() {
-        return count;
-    }
+        public GoodsDetailsBean getGoods() {
+            return goods;
+        }
 
-    public void setCount(int count) {
-        this.count = count;
-    }
+        public void setGoods(GoodsDetailsBean goods) {
+            this.goods = goods;
+        }
 
-    public boolean isIsChecked() {
-        return isChecked;
-    }
 
-    public void setIsChecked(boolean isChecked) {
-        this.isChecked = isChecked;
-    }
+        public CartBean() {
+        }
 
-    public boolean isChecked() {
-        return checked;
-    }
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof CartBean)) return false;
 
-    public void setChecked(boolean checked) {
-        this.checked = checked;
-    }
+            CartBean cartBean = (CartBean) o;
+
+            return getId() == cartBean.getId();
+
+        }
+
+        @Override
+        public int hashCode() {
+            return getId();
+        }
+
+        @Override
+        public String toString() {
+            return "CartBean{" +
+                    "id=" + id +
+                    ", userName=" + userName +
+                    ", goodsId=" + goodsId +
+                    ", count=" + count +
+                    ", checked=" + isChecked +
+                    ", goods='" + goods + '\'' +
+                    '}';
+        }
 }
