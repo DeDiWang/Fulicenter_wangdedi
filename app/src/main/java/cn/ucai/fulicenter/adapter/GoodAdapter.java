@@ -2,6 +2,7 @@ package cn.ucai.fulicenter.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -14,6 +15,7 @@ import butterknife.ButterKnife;
 import cn.ucai.fulicenter.I;
 import cn.ucai.fulicenter.R;
 import cn.ucai.fulicenter.bean.NewGoodsBean;
+import cn.ucai.fulicenter.utils.ImageLoader;
 
 /**
  * Created by 11039 on 2016/10/17.
@@ -30,10 +32,11 @@ public class GoodAdapter extends RecyclerView.Adapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         RecyclerView.ViewHolder holder;
+        LayoutInflater inflater=LayoutInflater.from(context);
         if (viewType == I.TYPE_FOOTER) {
-            holder = new FooterViewHolder(View.inflate(context, R.layout.item_footer, null));
+            holder = new FooterViewHolder(inflater.inflate(R.layout.item_footer, null));
         } else {
-            holder = new GoodViewHolder(View.inflate(context, R.layout.item_goods, null));
+            holder = new GoodViewHolder(inflater.inflate( R.layout.item_goods, null));
         }
         return holder;
     }
@@ -43,10 +46,12 @@ public class GoodAdapter extends RecyclerView.Adapter {
         if(getItemViewType(position)==I.TYPE_FOOTER){
             FooterViewHolder footerViewHolder= (FooterViewHolder) holder;
             footerViewHolder.tvFooter.setText("加载更多...");
+            return;
         }
         GoodViewHolder goodViewHolder= (GoodViewHolder) holder;
         NewGoodsBean good = goodsList.get(position);
-        goodViewHolder.ivGoodAvatar.setImageResource(R.mipmap.goods_thumb);
+        //下载商品图片
+        ImageLoader.downloadImg(context,goodViewHolder.ivGoodAvatar,good.getGoodsThumb());
         goodViewHolder.tvGoodName.setText(good.getGoodsName());
         goodViewHolder.tvGoodPrice.setText(good.getCurrencyPrice());
     }
@@ -63,6 +68,14 @@ public class GoodAdapter extends RecyclerView.Adapter {
     @Override
     public int getItemCount() {
         return goodsList != null ? goodsList.size() + 1 : 1;
+    }
+
+    public void initData(ArrayList<NewGoodsBean> mGoodsList) {
+        if(goodsList!=null){
+            goodsList.clear();
+        }
+        goodsList.addAll(mGoodsList);
+        notifyDataSetChanged();
     }
 
     static class FooterViewHolder extends RecyclerView.ViewHolder {
