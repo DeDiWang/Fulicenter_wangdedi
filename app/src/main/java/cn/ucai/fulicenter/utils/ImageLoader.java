@@ -30,7 +30,7 @@ public class ImageLoader {
     private static final int DOWNLOAD_ERROR=1;
 
     private static OkHttpClient mOkHttpClient;
-    /** mHandler不能单例，否则一个mHandler不能准确地处理多个mBean*/
+    /** mHandler不能单  例，否则一个mHandler不能准确地处理多个mBean*/
     private Handler mHandler;
     private static LruCache<String,Bitmap> mCaches;
     ImageBean mBean;
