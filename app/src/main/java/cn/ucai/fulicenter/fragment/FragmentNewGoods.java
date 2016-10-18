@@ -23,6 +23,7 @@ import cn.ucai.fulicenter.adapter.GoodAdapter;
 import cn.ucai.fulicenter.bean.NewGoodsBean;
 import cn.ucai.fulicenter.net.NetDao;
 import cn.ucai.fulicenter.utils.ConvertUtils;
+import cn.ucai.fulicenter.utils.ImageLoader;
 import cn.ucai.fulicenter.utils.L;
 import cn.ucai.fulicenter.utils.OkHttpUtils;
 
@@ -60,20 +61,79 @@ public class FragmentNewGoods extends Fragment {
         mAdapter = new GoodAdapter(mContext, mGoodsList);
 
         initView();
-        initData();
+        downloadNewGoods(mPageId,I.ACTION_DOWNLOAD);
+        setListener();
         return view;
     }
 
-    int pageId = 1;
+    private void setListener() {
+        setPullDownListener();
+        setPUllUpListener();
+    }
+    int lastPosition;
+    //上拉加载
+    private void setPUllUpListener() {
+        mRvGoodsList.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                lastPosition = gridManager.findLastVisibleItemPosition();
+                mAdapter.setScrollState(newState);
+                L.e("lastPosition="+lastPosition+",count="+mAdapter.getItemCount()+",isMore="+mAdapter.isMore());
+                if(newState==RecyclerView.SCROLL_STATE_IDLE &&
+                        lastPosition>=mAdapter.getItemCount()-1 &&
+                        mAdapter.isMore()){
+                    mPageId++;
+                    downloadNewGoods(mPageId,I.ACTION_PULL_UP);
+                }
+            }
 
-    private void initData() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
+    }
+
+    //下拉刷新
+    private void setPullDownListener() {
+        mSrl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mSrl.setRefreshing(true);
+                mSrl.setEnabled(true);
+                mTvRefreshHint.setVisibility(View.VISIBLE);
+                mPageId=1;
+                downloadNewGoods(mPageId,I.ACTION_PULL_DOWN);
+            }
+        });
+    }
+
+    int mPageId = 1;
+
+    private void downloadNewGoods(int pageId, final int action) {
         netDao.downloadGoodsList(mContext, pageId, new OkHttpUtils.OnCompleteListener<NewGoodsBean[]>() {
 
             @Override
             public void onSuccess(NewGoodsBean[] result) {
-                if(result!=null && result.length>0){
+                mSrl.setRefreshing(false);
+                mTvRefreshHint.setVisibility(View.GONE);
+                mAdapter.setFooter("加载更多...");
+                mAdapter.setMore(true);
+                if(result!=null){
                     ArrayList<NewGoodsBean> list = ConvertUtils.array2List(result);
-                    mAdapter.initData(list);
+                    if(action==I.ACTION_PULL_DOWN || action==I.ACTION_DOWNLOAD){
+                        mAdapter.initData(list);
+                    }else{
+                        mAdapter.addData(list);
+                    }
+                    if(list.size()<I.PAGE_SIZE_DEFAULT){
+                        mAdapter.setMore(false);
+                        mAdapter.setFooter("不能加载更多...");
+                    }
+                }else{
+                    mAdapter.setMore(false);
+                    mAdapter.setFooter("不能加载更多...");
                 }
             }
 
@@ -85,6 +145,7 @@ public class FragmentNewGoods extends Fragment {
     }
 
     private void initView() {
+        //下拉刷新圈圈的颜色
         mSrl.setColorSchemeColors(
                 getResources().getColor(R.color.google_blue),
                 getResources().getColor(R.color.google_green),
@@ -94,7 +155,15 @@ public class FragmentNewGoods extends Fragment {
         gridManager = new GridLayoutManager(mContext, I.COLUM_NUM);
         gridManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRvGoodsList.setLayoutManager(gridManager);
+        mRvGoodsList.setHasFixedSize(true);
 
         mRvGoodsList.setAdapter(mAdapter);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        OkHttpUtils.release();
+        ImageLoader.release();
     }
 }

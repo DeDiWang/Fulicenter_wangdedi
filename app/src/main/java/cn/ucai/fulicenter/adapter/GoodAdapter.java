@@ -45,7 +45,7 @@ public class GoodAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if(getItemViewType(position)==I.TYPE_FOOTER){
             FooterViewHolder footerViewHolder= (FooterViewHolder) holder;
-            footerViewHolder.tvFooter.setText("加载更多...");
+            footerViewHolder.tvFooter.setText(footer);
             return;
         }
         GoodViewHolder goodViewHolder= (GoodViewHolder) holder;
@@ -75,6 +75,29 @@ public class GoodAdapter extends RecyclerView.Adapter {
             goodsList.clear();
         }
         goodsList.addAll(mGoodsList);
+        notifyDataSetChanged();
+    }
+
+    private String footer;
+    public void setFooter(String footer) {
+        this.footer=footer;
+        notifyDataSetChanged();
+    }
+    private boolean isMore;
+    public void setMore(boolean isMore) {
+        this.isMore=isMore;
+    }
+    public boolean isMore(){
+        return isMore;
+    }
+
+    public void addData(ArrayList<NewGoodsBean> list) {
+        this.goodsList.addAll(list);
+        notifyDataSetChanged();
+    }
+    int newState;
+    public void setScrollState(int newState) {
+        this.newState=newState;
         notifyDataSetChanged();
     }
 

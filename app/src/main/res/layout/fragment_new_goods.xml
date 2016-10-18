@@ -16,7 +16,7 @@
                 android:id="@+id/tvRefreshHint"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="下拉刷新.."
+                android:text="刷新中..."
                 android:gravity="center"
                 />
             <android.support.v7.widget.RecyclerView
