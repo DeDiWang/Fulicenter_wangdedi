@@ -1,6 +1,7 @@
 package cn.ucai.fulicenter.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.ucai.fulicenter.I;
 import cn.ucai.fulicenter.R;
+import cn.ucai.fulicenter.activity.GoodsDetailsActivity;
 import cn.ucai.fulicenter.bean.NewGoodsBean;
 import cn.ucai.fulicenter.utils.ImageLoader;
 
@@ -24,9 +26,23 @@ public class GoodAdapter extends RecyclerView.Adapter {
     Context context;
     ArrayList<NewGoodsBean> goodsList;
 
-    public GoodAdapter(Context context, ArrayList<NewGoodsBean> goodsList) {
+    //设置商品列表项单击事件的监听对象
+    View.OnClickListener mItemOnClickListener;
+
+    public GoodAdapter(final Context context, ArrayList<NewGoodsBean> goodsList) {
         this.context = context;
         this.goodsList = goodsList;
+        //只需设置一个监听对象
+        mItemOnClickListener=new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //拿到该项的商品id
+                int goodsId = (int) view.getTag();
+                //跳转到商品详情的Activity
+                context.startActivity(new Intent(context, GoodsDetailsActivity.class)
+                .putExtra(I.GoodsDetails.KEY_GOODS_ID,goodsId));
+            }
+        };
     }
 
     @Override
@@ -54,6 +70,9 @@ public class GoodAdapter extends RecyclerView.Adapter {
         ImageLoader.downloadImg(context,goodViewHolder.ivGoodAvatar,good.getGoodsThumb());
         goodViewHolder.tvGoodName.setText(good.getGoodsName());
         goodViewHolder.tvGoodPrice.setText(good.getCurrencyPrice());
+
+        //给单击事件监听对象传递数据
+        goodViewHolder.layoutGoods.setTag(good.getGoodsId());
     }
 
     @Override
@@ -101,7 +120,7 @@ public class GoodAdapter extends RecyclerView.Adapter {
         notifyDataSetChanged();
     }
 
-    static class FooterViewHolder extends RecyclerView.ViewHolder {
+    class FooterViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.tvFooter)
         TextView tvFooter;
 
@@ -111,7 +130,7 @@ public class GoodAdapter extends RecyclerView.Adapter {
         }
     }
 
-    static class GoodViewHolder extends RecyclerView.ViewHolder{
+    class GoodViewHolder extends RecyclerView.ViewHolder{
         @BindView(R.id.ivGoodAvatar)
         ImageView ivGoodAvatar;
         @BindView(R.id.tvGoodName)
@@ -119,9 +138,13 @@ public class GoodAdapter extends RecyclerView.Adapter {
         @BindView(R.id.tvGoodPrice)
         TextView tvGoodPrice;
 
+        View layoutGoods;
         GoodViewHolder(View view) {
             super(view);
+            layoutGoods = view.findViewById(R.id.layout_goods);
             ButterKnife.bind(this, view);
+            //设置列表项的监听
+            layoutGoods.setOnClickListener(mItemOnClickListener);
         }
     }
 }
