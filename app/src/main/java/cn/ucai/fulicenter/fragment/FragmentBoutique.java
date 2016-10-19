@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -20,6 +21,8 @@ import cn.ucai.fulicenter.R;
 import cn.ucai.fulicenter.adapter.BoutiqueAdapter;
 import cn.ucai.fulicenter.bean.BoutiqueBean;
 import cn.ucai.fulicenter.net.NetDao;
+import cn.ucai.fulicenter.utils.ConvertUtils;
+import cn.ucai.fulicenter.utils.L;
 import cn.ucai.fulicenter.utils.OkHttpUtils;
 import cn.ucai.fulicenter.view.SpaceItemDecoration;
 
@@ -50,25 +53,49 @@ public class FragmentBoutique extends Fragment {
         ButterKnife.bind(this, layout);
         context=getContext();
         initView();
-        downloadBoutiques();
+        initData();
+        setListener();
         return layout;
     }
 
+    private void setListener() {
+        setPullDownListener();
+    }
+    //下拉刷新
+    private void setPullDownListener() {
+        srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                srl.setEnabled(true);
+                srl.setRefreshing(true);
+                tvRefreshHint.setVisibility(View.VISIBLE);
+                tvRefreshHint.setText("刷新中...");
+                initData();
+            }
+        });
+    }
+    private void initData() {
+        downloadBoutiques();
+    }
+
     private void downloadBoutiques() {
-        final OkHttpUtils<BoutiqueBean[]> utils = new OkHttpUtils<>(context);
         NetDao.downloadBoutique(context, new OkHttpUtils.OnCompleteListener<BoutiqueBean[]>() {
             @Override
             public void onSuccess(BoutiqueBean[] result) {
                 srl.setRefreshing(false);
+                tvRefreshHint.setVisibility(View.GONE);
                 if(result!=null){
-                    ArrayList<BoutiqueBean> boutiqueList = utils.array2List(result);
+                    L.i("result.length="+result.length);
+                    ArrayList<BoutiqueBean> boutiqueList = ConvertUtils.array2List(result);
                     mAdapter.initBoutiqueList(boutiqueList);
                 }
             }
 
             @Override
             public void onError(String error) {
-
+                srl.setRefreshing(false);
+                tvRefreshHint.setVisibility(View.GONE);
+                Toast.makeText(context, error, Toast.LENGTH_SHORT).show();
             }
         });
     }
