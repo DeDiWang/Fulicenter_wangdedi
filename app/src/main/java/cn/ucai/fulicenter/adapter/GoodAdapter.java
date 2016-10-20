@@ -7,17 +7,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import cn.ucai.fulicenter.I;
 import cn.ucai.fulicenter.R;
 import cn.ucai.fulicenter.activity.GoodsDetailsActivity;
 import cn.ucai.fulicenter.bean.NewGoodsBean;
 import cn.ucai.fulicenter.utils.ImageLoader;
+import cn.ucai.fulicenter.utils.MFGT;
 
 /**
  * Created by 11039 on 2016/10/17.
@@ -26,9 +31,43 @@ public class GoodAdapter extends RecyclerView.Adapter {
     Context context;
     ArrayList<NewGoodsBean> goodsList;
 
+    //添加排序功能
+    int sortBy=I.SORT_BY_PRICE_ASC;
+    public void setSortBy(int sortBy){
+        this.sortBy=sortBy;
+        sortBy();
+        notifyDataSetChanged();
+    }
+
+    private void sortBy() {
+        Collections.sort(goodsList, new Comparator<NewGoodsBean>() {
+            @Override
+            public int compare(NewGoodsBean left, NewGoodsBean right) {
+                int result=0;
+                switch (sortBy){
+                    case I.SORT_BY_ADDTIME_ASC:
+                        result= (int) (Long.valueOf(left.getAddTime())-Long.valueOf(right.getAddTime()));
+                        break;
+                    case I.SORT_BY_ADDTIME_DESC:
+                        result= (int) (Long.valueOf(right.getAddTime())-Long.valueOf(left.getAddTime()));
+                        break;
+                    case I.SORT_BY_PRICE_ASC:
+                        result= getPrice(left.getCurrencyPrice())-getPrice(right.getCurrencyPrice());
+                        break;
+                    case I.SORT_BY_PRICE_DESC:
+                        result= getPrice(right.getCurrencyPrice())-getPrice(left.getCurrencyPrice());
+                        break;
+                }
+                return result;
+            }
+            private int getPrice(String currencyPrice) {
+                return Integer.parseInt(currencyPrice.substring(currencyPrice.indexOf("￥")+1));
+            }
+        });
+    }
+
     //设置商品列表项单击事件的监听对象
     View.OnClickListener mItemOnClickListener;
-
     public GoodAdapter(final Context context, ArrayList<NewGoodsBean> goodsList) {
         this.context = context;
         this.goodsList = goodsList;
@@ -39,8 +78,9 @@ public class GoodAdapter extends RecyclerView.Adapter {
                 //拿到该项的商品id
                 int goodsId = (int) view.getTag();
                 //跳转到商品详情的Activity
-                context.startActivity(new Intent(context, GoodsDetailsActivity.class)
-                .putExtra(I.GoodsDetails.KEY_GOODS_ID,goodsId));
+                /*context.startActivity(new Intent(context, GoodsDetailsActivity.class)
+                .putExtra(I.GoodsDetails.KEY_GOODS_ID,goodsId));*/
+                MFGT.gotoDetailsActivity(context,goodsId);
             }
         };
     }
@@ -48,26 +88,26 @@ public class GoodAdapter extends RecyclerView.Adapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         RecyclerView.ViewHolder holder;
-        LayoutInflater inflater=LayoutInflater.from(context);
+        LayoutInflater inflater = LayoutInflater.from(context);
         if (viewType == I.TYPE_FOOTER) {
             holder = new FooterViewHolder(inflater.inflate(R.layout.item_footer, null));
         } else {
-            holder = new GoodViewHolder(inflater.inflate( R.layout.item_goods, null));
+            holder = new GoodViewHolder(inflater.inflate(R.layout.item_goods, null));
         }
         return holder;
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        if(getItemViewType(position)==I.TYPE_FOOTER){
-            FooterViewHolder footerViewHolder= (FooterViewHolder) holder;
+        if (getItemViewType(position) == I.TYPE_FOOTER) {
+            FooterViewHolder footerViewHolder = (FooterViewHolder) holder;
             footerViewHolder.tvFooter.setText(footer);
             return;
         }
-        GoodViewHolder goodViewHolder= (GoodViewHolder) holder;
+        GoodViewHolder goodViewHolder = (GoodViewHolder) holder;
         NewGoodsBean good = goodsList.get(position);
         //下载商品图片
-        ImageLoader.downloadImg(context,goodViewHolder.ivGoodAvatar,good.getGoodsThumb());
+        ImageLoader.downloadImg(context, goodViewHolder.ivGoodAvatar, good.getGoodsThumb());
         goodViewHolder.tvGoodName.setText(good.getGoodsName());
         goodViewHolder.tvGoodPrice.setText(good.getCurrencyPrice());
 
@@ -90,7 +130,7 @@ public class GoodAdapter extends RecyclerView.Adapter {
     }
 
     public void initData(ArrayList<NewGoodsBean> mGoodsList) {
-        if(goodsList!=null){
+        if (goodsList != null) {
             goodsList.clear();
         }
         goodsList.addAll(mGoodsList);
@@ -98,15 +138,19 @@ public class GoodAdapter extends RecyclerView.Adapter {
     }
 
     private String footer;
+
     public void setFooter(String footer) {
-        this.footer=footer;
+        this.footer = footer;
         notifyDataSetChanged();
     }
+
     private boolean isMore;
+
     public void setMore(boolean isMore) {
-        this.isMore=isMore;
+        this.isMore = isMore;
     }
-    public boolean isMore(){
+
+    public boolean isMore() {
         return isMore;
     }
 
@@ -114,9 +158,11 @@ public class GoodAdapter extends RecyclerView.Adapter {
         this.goodsList.addAll(list);
         notifyDataSetChanged();
     }
+
     int newState;
+
     public void setScrollState(int newState) {
-        this.newState=newState;
+        this.newState = newState;
         notifyDataSetChanged();
     }
 
@@ -130,21 +176,26 @@ public class GoodAdapter extends RecyclerView.Adapter {
         }
     }
 
-    class GoodViewHolder extends RecyclerView.ViewHolder{
+    class GoodViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.ivGoodAvatar)
         ImageView ivGoodAvatar;
         @BindView(R.id.tvGoodName)
         TextView tvGoodName;
         @BindView(R.id.tvGoodPrice)
         TextView tvGoodPrice;
-
-        View layoutGoods;
+        @BindView(R.id.layout_goods)
+        LinearLayout layoutGoods;
         GoodViewHolder(View view) {
             super(view);
-            layoutGoods = view.findViewById(R.id.layout_goods);
             ButterKnife.bind(this, view);
             //设置列表项的监听
             layoutGoods.setOnClickListener(mItemOnClickListener);
         }
+        /*@OnClick(R.id.layout_goods)
+        public void onItemOnClick(){
+            int goodsId= (int) layoutGoods.getTag();
+            MFGT.gotoDetailsActivity(context,goodsId);
+        }*/
     }
+
 }
