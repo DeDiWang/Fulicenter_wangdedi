@@ -14,11 +14,11 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import cn.ucai.fulicenter.I;
 import cn.ucai.fulicenter.R;
 import cn.ucai.fulicenter.adapter.GoodAdapter;
@@ -80,49 +80,44 @@ public class CategoryActivity extends AppCompatActivity {
                 MFGT.finish((Activity) mContext);
             }
         });
-        SortListener listener = new SortListener();
-        mbtnSortPrice.setOnClickListener(listener);
-        mbtnSortTime.setOnClickListener(listener);
 
-        mbtnCatChildFilter.setOnCatFilterClickListener(groupName,list);
+        mbtnCatChildFilter.setOnCatFilterClickListener(groupName, list);
     }
 
-    boolean priceAsc=false;
-    boolean timeAsc=false;
-    int sortBy=I.SORT_BY_PRICE_ASC;
-    //分类监听事件
-    class SortListener implements View.OnClickListener {
-        @Override
-        public void onClick(View view) {
-            Drawable right;
-            switch (view.getId()) {
-                case R.id.btnSortPrice:
-                    if(priceAsc){
-                        sortBy=I.SORT_BY_PRICE_ASC;
-                        right=getResources().getDrawable(R.mipmap.arrow_order_down);
-                    }else{
-                        sortBy=I.SORT_BY_PRICE_DESC;
-                        right=getResources().getDrawable(R.mipmap.arrow_order_up);
-                    }
-                    right.setBounds(0,0,right.getIntrinsicWidth(),right.getIntrinsicHeight());
-                    mbtnSortPrice.setCompoundDrawablesWithIntrinsicBounds(null,null,right,null);
-                    priceAsc=!priceAsc;
-                    break;
-                case R.id.btnSortTime:
-                    if(timeAsc){
-                        sortBy=I.SORT_BY_ADDTIME_ASC;
-                        right=getResources().getDrawable(R.mipmap.arrow_order_down);
-                    }else{
-                        sortBy=I.SORT_BY_ADDTIME_DESC;
-                        right=getResources().getDrawable(R.mipmap.arrow_order_up);
-                    }
-                    right.setBounds(0,0,right.getIntrinsicWidth(),right.getIntrinsicHeight());
-                    mbtnSortTime.setCompoundDrawablesWithIntrinsicBounds(null,null,right,null);
-                    timeAsc=!timeAsc;
-                    break;
-            }
-            mAdapter.setSortBy(sortBy);
+    boolean priceAsc = false;
+    boolean timeAsc = false;
+    int sortBy = I.SORT_BY_PRICE_ASC;
+
+    @OnClick({R.id.btnSortPrice, R.id.btnSortTime})
+    public void onClick(View view) {
+        Drawable right;
+        switch (view.getId()) {
+            case R.id.btnSortPrice:
+                if (priceAsc) {
+                    sortBy = I.SORT_BY_PRICE_ASC;
+                    right = getResources().getDrawable(R.mipmap.arrow_order_down);
+                } else {
+                    sortBy = I.SORT_BY_PRICE_DESC;
+                    right = getResources().getDrawable(R.mipmap.arrow_order_up);
+                }
+                right.setBounds(0, 0, right.getIntrinsicWidth(), right.getIntrinsicHeight());
+                mbtnSortPrice.setCompoundDrawablesWithIntrinsicBounds(null, null, right, null);
+                priceAsc = !priceAsc;
+                break;
+            case R.id.btnSortTime:
+                if (timeAsc) {
+                    sortBy = I.SORT_BY_ADDTIME_ASC;
+                    right = getResources().getDrawable(R.mipmap.arrow_order_down);
+                } else {
+                    sortBy = I.SORT_BY_ADDTIME_DESC;
+                    right = getResources().getDrawable(R.mipmap.arrow_order_up);
+                }
+                right.setBounds(0, 0, right.getIntrinsicWidth(), right.getIntrinsicHeight());
+                mbtnSortTime.setCompoundDrawablesWithIntrinsicBounds(null, null, right, null);
+                timeAsc = !timeAsc;
+                break;
         }
+        mAdapter.setSortBy(sortBy);
     }
 
     int lastPosition;
