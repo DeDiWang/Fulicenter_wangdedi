@@ -1,5 +1,6 @@
 package cn.ucai.fulicenter.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -16,12 +17,14 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cn.ucai.fulicenter.FuLiCenterApplication;
 import cn.ucai.fulicenter.R;
 import cn.ucai.fulicenter.fragment.FragmentBoutique;
 import cn.ucai.fulicenter.fragment.FragmentCart;
 import cn.ucai.fulicenter.fragment.FragmentCategory;
 import cn.ucai.fulicenter.fragment.FragmentMe;
 import cn.ucai.fulicenter.fragment.FragmentNewGoods;
+import cn.ucai.fulicenter.utils.MFGT;
 
 public class MainActivity extends AppCompatActivity {
     FragmentNewGoods mFragmentNewGoods;
@@ -102,7 +105,11 @@ public class MainActivity extends AppCompatActivity {
                 index = 3;
                 break;
             case R.id.rbPersonalCenter:
-                index = 4;
+                if(FuLiCenterApplication.getUserName()==null){
+                    MFGT.gotoLoginActivity(this);
+                }else{
+                    index = 4;
+                }
                 break;
         }
         initRadioButtonStatus();
