@@ -9,6 +9,15 @@ import android.content.Context;
 public class FuLiCenterApplication extends Application {
     public static Context applicationContext;
     private static FuLiCenterApplication instance;
+    private static String userName;
+
+    public static String getUserName() {
+        return userName;
+    }
+
+    public static void setUserName(String userName) {
+        FuLiCenterApplication.userName = userName;
+    }
 
     @Override
     public void onCreate() {
