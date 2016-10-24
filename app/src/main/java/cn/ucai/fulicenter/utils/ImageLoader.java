@@ -15,6 +15,7 @@ import java.net.URLEncoder;
 
 import cn.ucai.fulicenter.I;
 import cn.ucai.fulicenter.R;
+import cn.ucai.fulicenter.bean.UserAvatar;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -28,6 +29,7 @@ public class ImageLoader {
     private static final String UTF_8 = "utf-8";
     private static final int DOWNLOAD_SUCCESS=0;
     private static final int DOWNLOAD_ERROR=1;
+    private static final String TAG = ImageLoader.class.getSimpleName();
 
     private static OkHttpClient mOkHttpClient;
     /** mHandler不能单  例，否则一个mHandler不能准确地处理多个mBean*/
@@ -356,6 +358,25 @@ public class ImageLoader {
                 .defaultPicture(R.drawable.nopic)
                 .imageView(imageView)
                 .setDragging(isDragging)
+                .showImage(context);
+    }
+    //http://101.251.196.90:8000/FuLiCenterServerV2.0/downloadAvatar?
+    // name_or_hxid=a952702&avatarType=user_avatar&m_avatar_suffix=.jpg&width=200&height=200
+    public static String getAvatarUrl(UserAvatar user){
+        if(user!=null){
+            String url=I.DOWNLOAD_AVATAR_URL+I.NAME_OR_HXID+"="+user.getMuserName()+I.AND+
+                    I.AVATAR_TYPE+"="+user.getMavatarPath()+I.AND+I.AVATAR_SUFFIX+I.AVATAR_SUFFIX_JPG+
+                    I.AND+"width=200&height=200";
+            L.e(TAG+"url=="+url);
+            return url;
+        }
+        return null;
+    }
+    //下载并设置用户头像
+    public static void setAvatar(UserAvatar user,Context context,ImageView imageView){
+        ImageLoader.build(getAvatarUrl(user))
+                .defaultPicture(R.drawable.contactlogo)
+                .imageView(imageView)
                 .showImage(context);
     }
 }
