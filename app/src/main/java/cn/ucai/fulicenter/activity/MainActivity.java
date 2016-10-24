@@ -6,10 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -18,12 +15,14 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.ucai.fulicenter.FuLiCenterApplication;
+import cn.ucai.fulicenter.I;
 import cn.ucai.fulicenter.R;
 import cn.ucai.fulicenter.fragment.FragmentBoutique;
 import cn.ucai.fulicenter.fragment.FragmentCart;
 import cn.ucai.fulicenter.fragment.FragmentCategory;
 import cn.ucai.fulicenter.fragment.FragmentMe;
 import cn.ucai.fulicenter.fragment.FragmentNewGoods;
+import cn.ucai.fulicenter.utils.L;
 import cn.ucai.fulicenter.utils.MFGT;
 
 public class MainActivity extends AppCompatActivity {
@@ -34,8 +33,6 @@ public class MainActivity extends AppCompatActivity {
     FragmentMe mFragmentMe;
     List<Fragment> mFragmentList;
     int index = 0;//默认fragment的下标
-    @BindView(R.id.fragmentContainer)
-    FrameLayout mfragmentContainer;
     @BindView(R.id.rbNewGoods)
     RadioButton mrbNewGoods;
     @BindView(R.id.rbBoutique)
@@ -105,16 +102,21 @@ public class MainActivity extends AppCompatActivity {
                 index = 3;
                 break;
             case R.id.rbPersonalCenter:
-                if(FuLiCenterApplication.getUserName()==null){
-                    MFGT.gotoLoginActivity(this);
+                if(FuLiCenterApplication.getUser()==null){
+                    startActivityForResult(new Intent(this,LoginActivity.class),I.REQUEST_CODE_LOGIN);
                 }else{
                     index = 4;
                 }
                 break;
         }
+        setFragment();
+    }
+
+    private void setFragment() {
         initRadioButtonStatus();
         switchFragment(index);
     }
+
     //跳转Fragment
     int currentIndex = 0;//记录当前的Fragment下标
     private void switchFragment(int index) {
@@ -128,5 +130,21 @@ public class MainActivity extends AppCompatActivity {
         }
         ft.show(fragment).hide(mFragmentList.get(currentIndex)).commit();
         currentIndex = index;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setFragment();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        L.e("MainActivity.onActivityResult requestCode=="+requestCode);
+        //判断是否是从登录页面跳转回来的
+        if(requestCode == I.REQUEST_CODE_LOGIN && FuLiCenterApplication.getUser()!=null){
+            index=4;
+        }
     }
 }
