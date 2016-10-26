@@ -26,6 +26,7 @@ import cn.ucai.fulicenter.utils.ConvertUtils;
 import cn.ucai.fulicenter.utils.ImageLoader;
 import cn.ucai.fulicenter.utils.L;
 import cn.ucai.fulicenter.utils.OkHttpUtils;
+import cn.ucai.fulicenter.view.SpaceItemDecoration;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -112,8 +113,7 @@ public class FragmentNewGoods extends Fragment {
     int mPageId = 1;
 
     private void downloadNewGoods(int pageId, final int action) {
-        netDao.downloadGoodsList(mContext, pageId, new OkHttpUtils.OnCompleteListener<NewGoodsBean[]>() {
-
+        netDao.downloadGoodsList(mContext,I.CAT_ID, pageId, new OkHttpUtils.OnCompleteListener<NewGoodsBean[]>() {
             @Override
             public void onSuccess(NewGoodsBean[] result) {
                 mSrl.setRefreshing(false);
@@ -156,8 +156,8 @@ public class FragmentNewGoods extends Fragment {
         gridManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRvGoodsList.setLayoutManager(gridManager);
         mRvGoodsList.setHasFixedSize(true);
-
         mRvGoodsList.setAdapter(mAdapter);
+        mRvGoodsList.addItemDecoration(new SpaceItemDecoration(10));
     }
 
     @Override

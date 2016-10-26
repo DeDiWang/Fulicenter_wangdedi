@@ -22,6 +22,7 @@
         android:layout_margin="10dp"
         android:layout_height="50dp"
         android:hint="密码"
+        android:inputType="textPassword"
         android:paddingLeft="10dp"
         android:drawableRight="@drawable/icon_pwd"
         android:paddingRight="10dp"/>

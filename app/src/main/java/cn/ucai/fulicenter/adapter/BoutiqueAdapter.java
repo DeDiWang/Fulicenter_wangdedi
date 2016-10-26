@@ -1,6 +1,7 @@
 package cn.ucai.fulicenter.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,10 +14,12 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import cn.ucai.fulicenter.I;
+import butterknife.OnClick;
 import cn.ucai.fulicenter.R;
+import cn.ucai.fulicenter.activity.Boutique2Activity;
 import cn.ucai.fulicenter.bean.BoutiqueBean;
 import cn.ucai.fulicenter.utils.ImageLoader;
+import cn.ucai.fulicenter.utils.L;
 
 /**
  * Created by 11039 on 2016/10/18.
@@ -32,34 +35,12 @@ public class BoutiqueAdapter extends RecyclerView.Adapter {
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        RecyclerView.ViewHolder holder;
         LayoutInflater inflater = LayoutInflater.from(context);
-        if (viewType == I.TYPE_FOOTER) {
-            holder = new FooterViewHolder(inflater.inflate(R.layout.item_footer, null));
-        } else {
-            holder = new BoutiqueViewHolder(inflater.inflate(R.layout.item_boutique, null));
-        }
+        RecyclerView.ViewHolder holder = new BoutiqueViewHolder(inflater.inflate(R.layout.item_boutique, null));
         return holder;
-    }
-    private String footer;
-    public void setFooter(String footer){
-        this.footer=footer;
-        notifyDataSetChanged();
-    }
-    private boolean isMore;
-    public void setMore(boolean isMore){
-        this.isMore=isMore;
-    }
-    public boolean isMore(){
-        return isMore;
     }
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        if(getItemViewType(position)==I.TYPE_FOOTER){
-            FooterViewHolder footerViewHolder= (FooterViewHolder) holder;
-            footerViewHolder.tvFooter.setText(footer);
-            return;
-        }
         BoutiqueBean boutiqueBeen = mBoutiqueList.get(position);
         BoutiqueViewHolder boutiqueViewHolder= (BoutiqueViewHolder) holder;
         boutiqueViewHolder.tvBoutiqueTitle.setText(boutiqueBeen.getTitle());
@@ -67,21 +48,15 @@ public class BoutiqueAdapter extends RecyclerView.Adapter {
         boutiqueViewHolder.tvBoutiqueDes.setText(boutiqueBeen.getDescription());
         //下载精品图片并设置
         ImageLoader.downloadImg(context,boutiqueViewHolder.ivBoutique,boutiqueBeen.getImageurl());
+        //向单击事件监听传递该商品对象
+        boutiqueViewHolder.layoutBoutique.setTag(boutiqueBeen);
     }
 
     @Override
     public int getItemCount() {
-        return mBoutiqueList != null ? mBoutiqueList.size() + 1 : 1;
+        return mBoutiqueList != null ? mBoutiqueList.size() : 0;
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        if (position == getItemCount() - 1) {
-            return I.TYPE_FOOTER;
-        } else {
-            return I.TYPE_ITEM;
-        }
-    }
 
     public void initBoutiqueList(ArrayList<BoutiqueBean> boutiqueList) {
         if(mBoutiqueList!=null){
@@ -91,17 +66,7 @@ public class BoutiqueAdapter extends RecyclerView.Adapter {
         notifyDataSetChanged();
     }
 
-    class FooterViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.tvFooter)
-        TextView tvFooter;
-
-        FooterViewHolder(View view) {
-            super(view);
-            ButterKnife.bind(this, view);
-        }
-    }
-
-    static class BoutiqueViewHolder extends RecyclerView.ViewHolder{
+    class BoutiqueViewHolder extends RecyclerView.ViewHolder{
         @BindView(R.id.ivBoutique)
         ImageView ivBoutique;
         @BindView(R.id.tvBoutiqueTitle)
@@ -116,6 +81,16 @@ public class BoutiqueAdapter extends RecyclerView.Adapter {
         BoutiqueViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
+        }
+        @OnClick(R.id.layout_boutique)
+        public void onItemClick(){
+            BoutiqueBean boutiqueBean= (BoutiqueBean) layoutBoutique.getTag();
+            L.e(boutiqueBean.toString());
+            int catId=boutiqueBean.getId();
+            String name=boutiqueBean.getName();
+            context.startActivity(new Intent(context,Boutique2Activity.class)
+                    .putExtra("catId",catId)
+                    .putExtra("name",name));
         }
     }
 }

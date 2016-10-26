@@ -150,4 +150,10 @@ public class CollectGoodsActivity extends AppCompatActivity {
     public void onClick() {
         MFGT.finish(this);
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initData();
+    }
 }

@@ -108,6 +108,9 @@ public class MainActivity extends AppCompatActivity {
                     index = 4;
                 }
                 break;
+            default:
+                index=0;
+                break;
         }
         setFragment();
     }
@@ -118,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //跳转Fragment
-    int currentIndex = 0;//记录当前的Fragment下标
+    int currentIndex;//记录当前的Fragment下标
     private void switchFragment(int index) {
         if (index == currentIndex) {
             return;
@@ -135,9 +138,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        if(FuLiCenterApplication.getUser()==null && index==4){
+            index =0;
+        }
         setFragment();
     }
 
+    //先于onResume方法执行
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

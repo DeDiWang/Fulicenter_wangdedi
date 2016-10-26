@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="cn.ucai.fulicenter">
-    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".FuLiCenterApplication"
         android:allowBackup="true"
@@ -9,20 +11,24 @@
         android:label="福利社"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.MainActivity">
-            <!--<intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>-->
-        </activity>
+        <activity android:name=".activity.MainActivity"></activity>
         //将闪屏界面设置为程序的入口
         <activity android:name=".activity.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".activity.GoodsDetailsActivity"
+            android:launchMode="singleTask" />
+        <activity android:name=".activity.Boutique2Activity" />
+        <activity android:name=".activity.CategoryActivity" />
+        <activity android:name=".activity.RegisterActivity" />
+        <activity android:name=".activity.LoginActivity" />
+        <activity android:name=".activity.SettingActivity" />
+        <activity android:name=".activity.CollectGoodsActivity"></activity>
     </application>
 
 </manifest>

@@ -1,6 +1,7 @@
 package cn.ucai.fulicenter.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
@@ -14,10 +15,13 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import cn.ucai.fulicenter.R;
+import cn.ucai.fulicenter.activity.CategoryActivity;
 import cn.ucai.fulicenter.bean.CategoryChildBean;
 import cn.ucai.fulicenter.bean.CategoryGroupBean;
 import cn.ucai.fulicenter.utils.ImageLoader;
+import cn.ucai.fulicenter.utils.MFGT;
 
 
 /**
@@ -116,11 +120,12 @@ public class CategoryAdapter extends BaseExpandableListAdapter {
             holder= (ChildViewHolder) view.getTag();
         }
         CategoryChildBean childBean = getChild(i,i1);
-        if(childBean!=null){
+        if(childBean!=null) {
             holder.tvChildName.setText(childBean.getName());
-            ImageLoader.downloadImg(mContext,holder.ivChildThumb,childBean.getImageUrl());
+            ImageLoader.downloadImg(mContext, holder.ivChildThumb, childBean.getImageUrl());
+            /*//向列表监听项传入该ChildBean对象
+            holder.layoutCategoryChild.setTag(childBean);*/
         }
-
         return view;
     }
 
@@ -163,5 +168,12 @@ public class CategoryAdapter extends BaseExpandableListAdapter {
         ChildViewHolder(View view) {
             ButterKnife.bind(this, view);
         }
+       /* //小类列表项监听事件
+        @OnClick(R.id.layout_category_child)
+        public void onCategoryChildItemOnClick(){
+            CategoryChildBean childBean = (CategoryChildBean) layoutCategoryChild.getTag();
+            mContext.startActivity(new Intent(mContext, CategoryActivity.class).
+                    putExtra("childBean",childBean));
+        }*/
     }
 }

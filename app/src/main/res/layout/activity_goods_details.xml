@@ -88,6 +88,7 @@
             android:layout_height="wrap_content"
             android:text="999元"
             android:textSize="20dp"
+            android:textColor="@color/good_detail_currency_price"
             android:layout_alignParentRight="true"
             android:layout_marginRight="30dp"/>
         <TextView
@@ -95,13 +96,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="99元"
+            android:textColor="@color/good_detail_currency_price"
             android:textSize="20dp"
             android:layout_alignLeft="@+id/tvGoodShopPrice"
             android:layout_marginTop="40dp"/>
         <RelativeLayout
             android:id="@+id/layout_image"
             android:layout_width="match_parent"
-            android:layout_height="190dp"
+            android:layout_height="240dp"
             android:layout_below="@+id/tvGoodCurrentPrice"
             android:layout_marginTop="30dp"
             >
@@ -120,7 +122,7 @@
                 app:r="5dp"
                 app:space="3dp"
                 app:focus_color="@color/good_detaul_flow_indicator_focus"
-                app:normal_color="#ff0"/>
+                app:normal_color="@color/gray"/>
         </RelativeLayout>
         <WebView
             android:id="@+id/wvGoodBrief"

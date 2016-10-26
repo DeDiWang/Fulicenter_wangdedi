@@ -50,6 +50,10 @@ public interface I {
     int NEW_GOOD=0;
     int CATEGORY_GOOD=1;
     int CAT_ID=0;
+    int REQUEST_CODE_REGISTER=101;
+    int REQUEST_CODE_LOGIN = 102;
+    String DOWNLOAD_AVATAR_URL = "http://101.251.196.90:8000/FuLiCenterServerV2.0/downloadAvatar?";
+    String AVATAR_SUFFIX = "m_avatar_suffix";
 
     interface Goods {
         String KEY_RESULT = "result";

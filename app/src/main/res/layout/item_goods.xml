@@ -3,15 +3,15 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardCornerRadius="5dp"
-    app:cardBackgroundColor="#a9afa9"
-    android:layout_margin="10dp">
+    app:cardCornerRadius="8dp"
+    app:cardBackgroundColor="#fff"
+    >
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:background="#f99"
-        android:layout_margin="10dp"
+        android:layout_margin="5dp"
         android:id="@+id/layout_goods"
         android:weightSum="1">
         <ImageView

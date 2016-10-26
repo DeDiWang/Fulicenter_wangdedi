@@ -9,7 +9,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -18,6 +17,7 @@ import cn.ucai.fulicenter.I;
 import cn.ucai.fulicenter.R;
 import cn.ucai.fulicenter.bean.Result;
 import cn.ucai.fulicenter.net.NetDao;
+import cn.ucai.fulicenter.utils.CommonUtils;
 import cn.ucai.fulicenter.utils.MFGT;
 import cn.ucai.fulicenter.utils.OkHttpUtils;
 
@@ -91,21 +91,20 @@ public class RegisterActivity extends AppCompatActivity {
             public void onSuccess(Result result) {
                 dialog.dismiss();
                 if (result.getRetCode() == 0) {
-                    Toast.makeText(RegisterActivity.this, "注册成功!", Toast.LENGTH_SHORT).show();
+                    CommonUtils.showShortToast(getResources().getString(R.string.register_success));
                     //跳转回登录界面
-                    setResult(RESULT_OK,new Intent().putExtra("userName",userName));
+                    setResult(RESULT_OK,new Intent().putExtra(I.User.USER_NAME,userName));
                     //并关掉注册界面
                     MFGT.finish(RegisterActivity.this);
                 } else if(result.getRetCode()== I.MSG_REGISTER_USERNAME_EXISTS){
-                    Toast.makeText(RegisterActivity.this, "用户已存在!", Toast.LENGTH_SHORT).show();
-                    return;
+                    CommonUtils.showShortToast(getResources().getString(R.string.register_fail_exists));
                 }
             }
 
             @Override
             public void onError(String error) {
                 dialog.dismiss();
-                Toast.makeText(RegisterActivity.this,error,Toast.LENGTH_SHORT).show();
+                CommonUtils.showShortToast(error);
             }
         });
     }

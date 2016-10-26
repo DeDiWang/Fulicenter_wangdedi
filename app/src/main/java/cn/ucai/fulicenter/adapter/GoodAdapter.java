@@ -134,6 +134,7 @@ public class GoodAdapter extends RecyclerView.Adapter {
             goodsList.clear();
         }
         goodsList.addAll(mGoodsList);
+        sortBy();
         notifyDataSetChanged();
     }
 
@@ -156,6 +157,7 @@ public class GoodAdapter extends RecyclerView.Adapter {
 
     public void addData(ArrayList<NewGoodsBean> list) {
         this.goodsList.addAll(list);
+        sortBy();
         notifyDataSetChanged();
     }
 

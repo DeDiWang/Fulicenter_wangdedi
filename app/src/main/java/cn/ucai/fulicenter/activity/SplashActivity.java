@@ -1,18 +1,27 @@
 package cn.ucai.fulicenter.activity;
 
+import android.content.Context;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import cn.ucai.fulicenter.Dao.SharedPreferencesUtils;
+import cn.ucai.fulicenter.Dao.UserDao;
+import cn.ucai.fulicenter.FuLiCenterApplication;
 import cn.ucai.fulicenter.R;
+import cn.ucai.fulicenter.bean.UserAvatar;
+import cn.ucai.fulicenter.utils.L;
 import cn.ucai.fulicenter.utils.MFGT;
 
 public class SplashActivity extends AppCompatActivity {
-    private long splashTime=2000;
+    private static final String TAG = SplashActivity.class.getSimpleName();
+    private long splashTime=1500;
+    Context context;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+        context=SplashActivity.this;
     }
 
     @Override
@@ -39,8 +48,22 @@ public class SplashActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+                //从内存中取数据，若没有则从数据库中取
+                UserAvatar user = FuLiCenterApplication.getUser();
+                L.e(TAG+",从内存中取的用户信息=="+user);
+                //从首选项中读取用户名
+                String userName = SharedPreferencesUtils.getInstance(context).getUser();
+                L.e(TAG+",从首选项中取的用户名=="+userName);
+                if(user==null && userName!=null){
+                    UserDao dao = new UserDao(context);
+                    user = dao.getUser(userName);
+                    L.e(TAG+"从数据库中取的用户信息=="+user);
+                    if(user!=null){
+                        FuLiCenterApplication.setUser(user);
+                    }
+                }
                 MFGT.gotoMainActivity(SplashActivity.this);
-                finish();
+                MFGT.finish(SplashActivity.this);
             }
         },splashTime);
     }

@@ -95,10 +95,10 @@ public class CategoryActivity extends AppCompatActivity {
             case R.id.btnSortPrice:
                 if (priceAsc) {
                     sortBy = I.SORT_BY_PRICE_ASC;
-                    right = getResources().getDrawable(R.mipmap.arrow_order_down);
+                    right = getResources().getDrawable(R.mipmap.arrow_order_up);
                 } else {
                     sortBy = I.SORT_BY_PRICE_DESC;
-                    right = getResources().getDrawable(R.mipmap.arrow_order_up);
+                    right = getResources().getDrawable(R.mipmap.arrow_order_down);
                 }
                 right.setBounds(0, 0, right.getIntrinsicWidth(), right.getIntrinsicHeight());
                 mbtnSortPrice.setCompoundDrawablesWithIntrinsicBounds(null, null, right, null);
@@ -107,10 +107,10 @@ public class CategoryActivity extends AppCompatActivity {
             case R.id.btnSortTime:
                 if (timeAsc) {
                     sortBy = I.SORT_BY_ADDTIME_ASC;
-                    right = getResources().getDrawable(R.mipmap.arrow_order_down);
+                    right = getResources().getDrawable(R.mipmap.arrow_order_up);
                 } else {
                     sortBy = I.SORT_BY_ADDTIME_DESC;
-                    right = getResources().getDrawable(R.mipmap.arrow_order_up);
+                    right = getResources().getDrawable(R.mipmap.arrow_order_down);
                 }
                 right.setBounds(0, 0, right.getIntrinsicWidth(), right.getIntrinsicHeight());
                 mbtnSortTime.setCompoundDrawablesWithIntrinsicBounds(null, null, right, null);

@@ -2,6 +2,7 @@ package cn.ucai.fulicenter.fragment;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -16,6 +17,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.ucai.fulicenter.R;
+import cn.ucai.fulicenter.activity.CategoryActivity;
 import cn.ucai.fulicenter.adapter.CategoryAdapter;
 import cn.ucai.fulicenter.bean.CategoryChildBean;
 import cn.ucai.fulicenter.bean.CategoryGroupBean;
@@ -50,7 +52,24 @@ public class FragmentCategory extends Fragment {
         mChildList=new ArrayList<>();
         initView();
         initData();
+        setListener();
         return view;
+    }
+
+    private void setListener() {
+        elvCategory.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView expandableListView, View view, int i, int i1, long l) {
+                String groupName = mGroupList.get(i).getName();
+                int childId = mChildList.get(i).get(i1).getId();
+                ArrayList<CategoryChildBean> list = mChildList.get(i);
+                mContext.startActivity(new Intent(mContext, CategoryActivity.class).
+                        putExtra("groupName",groupName)
+                        .putExtra("childId",childId)
+                        .putExtra("list",list));
+                return false;
+            }
+        });
     }
 
     private void initData() {
@@ -110,7 +129,7 @@ public class FragmentCategory extends Fragment {
         elvCategory.setAdapter(mAdapter);
         elvCategory.setGroupIndicator(null);
         elvCategory.setChildIndicator(null);
-        
+
     }
 
     @Override

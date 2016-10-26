@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_margin="10dp"
     app:cardCornerRadius="8dp"
-    app:cardBackgroundColor="#918a8a"
+    app:cardBackgroundColor="#e2dada"
     android:padding="5dp">
     <RelativeLayout
         android:id="@+id/layout_category_group"
@@ -29,7 +29,7 @@
             android:textSize="25sp"
             android:textColor="#000"
             android:text="饰物"
-            android:layout_centerVertical="true"/>
+            android:layout_marginTop="15dp"/>
         <ImageView
             android:id="@+id/ivIndicator"
             android:layout_marginRight="20dp"

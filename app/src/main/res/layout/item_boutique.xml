@@ -4,7 +4,6 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardCornerRadius="10dp"
-    app:cardBackgroundColor="#7a559f"
     android:layout_margin="10dp">
     <LinearLayout
         android:id="@+id/layout_boutique"
@@ -45,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:text="精选介绍"
                 android:textSize="18sp"
-                android:textColor="#fff"
+                android:textColor="#cc7c7c"
                 android:layout_marginTop="15dp"/>
         </LinearLayout>
     </LinearLayout>

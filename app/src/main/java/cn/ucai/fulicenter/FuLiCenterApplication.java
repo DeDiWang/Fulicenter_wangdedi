@@ -3,13 +3,24 @@ package cn.ucai.fulicenter;
 import android.app.Application;
 import android.content.Context;
 
+import cn.ucai.fulicenter.bean.UserAvatar;
+
 /**
  * Created by 11039 on 2016/10/17.
  */
 public class FuLiCenterApplication extends Application {
-    public static Context applicationContext;
+    public static Context application;
     private static FuLiCenterApplication instance;
     private static String userName;
+    private static UserAvatar user;
+
+    public static UserAvatar getUser() {
+        return user;
+    }
+
+    public static void setUser(UserAvatar user) {
+        FuLiCenterApplication.user = user;
+    }
 
     public static String getUserName() {
         return userName;
@@ -22,7 +33,7 @@ public class FuLiCenterApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        applicationContext=this;
+        application=this;
         instance=this;
     }
     public static FuLiCenterApplication getInstance(){
@@ -31,4 +42,5 @@ public class FuLiCenterApplication extends Application {
         }
         return instance;
     }
+
 }

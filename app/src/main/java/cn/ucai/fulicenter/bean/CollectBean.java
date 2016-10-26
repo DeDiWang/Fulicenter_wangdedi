@@ -35,7 +35,7 @@ public class CollectBean implements Serializable {
      */
 
     private int id;
-    private int userName;
+    private String userName;
     private int goodsId;
     private String goodsName;
     private String goodsEnglishName;
@@ -51,11 +51,11 @@ public class CollectBean implements Serializable {
         this.id = id;
     }
 
-    public int getUserName() {
+    public String getUserName() {
         return userName;
     }
 
-    public void setUserName(int userName) {
+    public void setUserName(String userName) {
         this.userName = userName;
     }
 
