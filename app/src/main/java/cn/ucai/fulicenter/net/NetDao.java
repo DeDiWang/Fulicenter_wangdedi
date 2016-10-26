@@ -153,4 +153,37 @@ public class NetDao {
                 .targetClass(CollectBean[].class)
                 .execute(listener);
     }
+//http://101.251.196.90:8000/FuLiCenterServerV2.0/deleteCollect?
+// goods_id=7677&userName=a952702
+    //删除收藏的商品
+    public static void deleteCollectGood(Context context,int goodsId,String userName,
+                                         OkHttpUtils.OnCompleteListener<MessageBean> listener){
+        OkHttpUtils<MessageBean> utils = new OkHttpUtils<>(context);
+        utils.setRequestUrl(I.REQUEST_DELETE_COLLECT)
+                .addParam(I.Goods.KEY_GOODS_ID,String.valueOf(goodsId))
+                .addParam(I.Collect.USER_NAME,userName)
+                .targetClass(MessageBean.class)
+                .execute(listener);
+    }
+    //添加收藏
+    public static void addCollectGood(Context context,int goodsId,String userName,
+                                      OkHttpUtils.OnCompleteListener<MessageBean> listener){
+        OkHttpUtils<MessageBean> utils = new OkHttpUtils<>(context);
+        utils.setRequestUrl(I.REQUEST_ADD_COLLECT)
+                .addParam(I.Goods.KEY_GOODS_ID,String.valueOf(goodsId))
+                .addParam(I.Collect.USER_NAME,userName)
+                .targetClass(MessageBean.class)
+                .execute(listener);
+    }
+    //http://101.251.196.90:8000/FuLiCenterServerV2.0/isCollect?goods_id=7677&userName=a952702
+    //判断用户是否收藏该商品
+    public static void isCollect(Context context,int goodsId,String userName,
+                                 OkHttpUtils.OnCompleteListener<MessageBean> listener){
+        OkHttpUtils<MessageBean> utils = new OkHttpUtils<>(context);
+        utils.setRequestUrl(I.REQUEST_IS_COLLECT)
+                .addParam(I.Goods.KEY_GOODS_ID,String.valueOf(goodsId))
+                .addParam(I.Collect.USER_NAME,userName)
+                .targetClass(MessageBean.class)
+                .execute(listener);
+    }
 }
