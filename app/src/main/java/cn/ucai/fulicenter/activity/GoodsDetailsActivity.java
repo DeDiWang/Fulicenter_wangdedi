@@ -26,6 +26,7 @@ import cn.ucai.fulicenter.bean.MessageBean;
 import cn.ucai.fulicenter.bean.UserAvatar;
 import cn.ucai.fulicenter.net.NetDao;
 import cn.ucai.fulicenter.utils.CommonUtils;
+import cn.ucai.fulicenter.utils.L;
 import cn.ucai.fulicenter.utils.MFGT;
 import cn.ucai.fulicenter.utils.OkHttpUtils;
 import cn.ucai.fulicenter.view.FlowIndicator;
@@ -195,15 +196,15 @@ public class GoodsDetailsActivity extends AppCompatActivity {
                 break;
             case R.id.ivCollect:
                 final UserAvatar user = FuLiCenterApplication.getUser();
-                if(user==null){
+                if (user == null) {
                     MFGT.gotoLoginActivity((Activity) context);
-                }else{
-                    if(isCollected){
+                } else {
+                    if (isCollected) {
                         NetDao.deleteCollectGood(context, goodsId, user.getMuserName(), new OkHttpUtils.OnCompleteListener<MessageBean>() {
                             @Override
                             public void onSuccess(MessageBean result) {
                                 CommonUtils.showShortToast(result.getMsg());
-                                isCollected=!isCollected;
+                                isCollected = !isCollected;
                                 updateGoodCollectStatus();
                             }
 
@@ -212,12 +213,12 @@ public class GoodsDetailsActivity extends AppCompatActivity {
 
                             }
                         });
-                    }else{
+                    } else {
                         NetDao.addCollectGood(context, goodsId, user.getMuserName(), new OkHttpUtils.OnCompleteListener<MessageBean>() {
                             @Override
                             public void onSuccess(MessageBean result) {
                                 CommonUtils.showShortToast(result.getMsg());
-                                isCollected=!isCollected;
+                                isCollected = !isCollected;
                                 updateGoodCollectStatus();
                             }
 
@@ -261,5 +262,25 @@ public class GoodsDetailsActivity extends AppCompatActivity {
 
         // 启动分享GUI
         oks.show(this);
+    }
+
+    @OnClick(R.id.ivCart)
+    public void addCartOnClick() {
+        UserAvatar user = FuLiCenterApplication.getUser();
+        if(user==null){
+            MFGT.gotoLoginActivity((Activity) context);
+        }else{
+            NetDao.addCart(context, goodsId, user.getMuserName(), 1, true, new OkHttpUtils.OnCompleteListener<MessageBean>() {
+                @Override
+                public void onSuccess(MessageBean result) {
+
+                }
+
+                @Override
+                public void onError(String error) {
+
+                }
+            });
+        }
     }
 }

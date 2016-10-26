@@ -32,5 +32,6 @@
     <string name="update_user_avatar_fail">更新用户头像失败</string>
     <string name="update_user_avatar_success">更新用户头像成功</string>
     <string name="update_user_avatar">更新用户头像中...</string>
-    <string name="delete_collect_fail">delete collect fail</string>
+    <string name="delete_collect_fail">删除收藏失败</string>
+    <string name="add_cart_success">成功添加到购物车</string>
 </resources>
