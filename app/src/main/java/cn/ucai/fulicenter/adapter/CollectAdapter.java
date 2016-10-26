@@ -138,6 +138,7 @@ public class CollectAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             //跳转到商品详情页
             MFGT.gotoDetailsActivity(context,collectBean.getGoodsId());
         }
+
         //删除当前收藏商品项
         @OnClick(R.id.ivDelete)
         public void onDeleteClick() {
