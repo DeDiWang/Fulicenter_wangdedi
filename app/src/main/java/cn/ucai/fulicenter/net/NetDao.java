@@ -9,7 +9,9 @@ import cn.ucai.fulicenter.I;
 import cn.ucai.fulicenter.bean.BoutiqueBean;
 import cn.ucai.fulicenter.bean.CategoryChildBean;
 import cn.ucai.fulicenter.bean.CategoryGroupBean;
+import cn.ucai.fulicenter.bean.CollectBean;
 import cn.ucai.fulicenter.bean.GoodsDetailsBean;
+import cn.ucai.fulicenter.bean.MessageBean;
 import cn.ucai.fulicenter.bean.NewGoodsBean;
 import cn.ucai.fulicenter.bean.Result;
 import cn.ucai.fulicenter.utils.MD5;
@@ -126,6 +128,29 @@ public class NetDao {
                 .addFile2(file)
                 .targetClass(String.class)
                 .post()
+                .execute(listener);
+    }
+    //下载收藏商品数量
+    public static void findCollectCount(Context context,String userName,
+                                        OkHttpUtils.OnCompleteListener<MessageBean> listener){
+        OkHttpUtils<MessageBean> utils = new OkHttpUtils<>(context);
+        utils.setRequestUrl(I.REQUEST_FIND_COLLECT_COUNT)
+                .addParam(I.Collect.USER_NAME,userName)
+                .targetClass(MessageBean.class)
+                .execute(listener);
+    }
+
+    //http://101.251.196.90:8000/FuLiCenterServerV2.0/findCollects?
+    // userName=a952702&page_id=1&page_size=10
+    //下载收藏的商品列表
+    public static void downloadCollectGoods(Context context, String userName, int pageId,
+                                            OkHttpUtils.OnCompleteListener<CollectBean[]> listener){
+        OkHttpUtils<CollectBean[]> utils = new OkHttpUtils<>(context);
+        utils.setRequestUrl(I.REQUEST_FIND_COLLECTS)
+                .addParam(I.Collect.USER_NAME,userName)
+                .addParam(I.PAGE_ID,String.valueOf(pageId))
+                .addParam(I.PAGE_SIZE,String.valueOf(I.PAGE_SIZE_DEFAULT))
+                .targetClass(CollectBean[].class)
                 .execute(listener);
     }
 }
