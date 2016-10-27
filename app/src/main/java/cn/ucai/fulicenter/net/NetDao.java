@@ -7,6 +7,7 @@ import java.io.File;
 
 import cn.ucai.fulicenter.I;
 import cn.ucai.fulicenter.bean.BoutiqueBean;
+import cn.ucai.fulicenter.bean.CartBean;
 import cn.ucai.fulicenter.bean.CategoryChildBean;
 import cn.ucai.fulicenter.bean.CategoryGroupBean;
 import cn.ucai.fulicenter.bean.CollectBean;
@@ -200,6 +201,18 @@ public class NetDao {
                 .addParam(I.Cart.COUNT,String.valueOf(count))
                 .addParam(I.Cart.IS_CHECKED,String.valueOf(isChecked))
                 .targetClass(MessageBean.class)
+                .execute(listener);
+    }
+
+    //http://101.251.196.90:8000/FuLiCenterServerV2.0/findCarts?
+    // userName=a952702
+    //查询购物车
+    public static void findCarts(Context context, String userName,
+                                 OkHttpUtils.OnCompleteListener<CartBean[]> listener){
+        OkHttpUtils<CartBean[]> utils = new OkHttpUtils<>(context);
+        utils.setRequestUrl(I.REQUEST_FIND_CARTS)
+                .addParam(I.Cart.USER_NAME,userName)
+                .targetClass(CartBean[].class)
                 .execute(listener);
     }
 }

@@ -11,12 +11,15 @@
         android:id="@+id/layout_cart_good"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <ImageView
+        <CheckBox
             android:id="@+id/ivSelect"
-            android:layout_width="25dp"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
-            android:src="@mipmap/checkbox_normal"/>
+            style="@style/CustomCheckboxTheme"
+            android:checked="false"
+            android:src="@mipmap/checkbox_normal"
+            android:layout_centerVertical="true"/>
         <ImageView
             android:id="@+id/ivGoodThumb"
             android:layout_width="70dp"
@@ -64,7 +67,8 @@
         <TextView
             android:id="@+id/tvGoodsSum"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:text="￥998"
             android:textSize="18dp"
             android:gravity="center_vertical"
