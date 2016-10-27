@@ -225,4 +225,16 @@ public class NetDao {
                 .targetClass(MessageBean.class)
                 .execute(listener);
     }
+    //更新购物车商品数量
+    public static void updateCartCount(Context context,int id,int count,
+                                       OkHttpUtils.OnCompleteListener<MessageBean> listener){
+        OkHttpUtils<MessageBean> utils = new OkHttpUtils<>(context);
+        utils.setRequestUrl(I.REQUEST_UPDATE_CART)
+                .addParam(I.Cart.ID,String.valueOf(id))
+                .addParam(I.Cart.COUNT,String.valueOf(count))
+                .addParam(I.Cart.IS_CHECKED,String.valueOf(0))
+                .targetClass(MessageBean.class)
+                .execute(listener);
+    }
+
 }

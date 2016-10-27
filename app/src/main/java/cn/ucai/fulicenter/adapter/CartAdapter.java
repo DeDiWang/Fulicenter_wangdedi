@@ -58,9 +58,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         if (goods != null) {
             ImageLoader.downloadImg(context, cartViewHolder.ivGoodThumb, goods.getGoodsThumb());
             cartViewHolder.tvCartGoodName.setText(goods.getGoodsName());
-            cartViewHolder.tvGoodsSum.setText(String.valueOf(Integer.parseInt(
-                    goods.getCurrencyPrice().substring(goods.getCurrencyPrice().indexOf("￥") + 1))
-                    * cartBean.getCount()));
+            cartViewHolder.tvGoodsSum.setText(goods.getCurrencyPrice());
         }
         cartViewHolder.layoutCartGood.setTag(cartBean);
 
@@ -100,6 +98,68 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         @BindView(R.id.layout_cart_good)
         RelativeLayout layoutCartGood;
 
+        @OnClick({R.id.ivAddGood, R.id.ivDeleteGood})
+        public void onClick(View view) {
+            switch (view.getId()) {
+                case R.id.ivAddGood:
+                    final CartBean cart= (CartBean) layoutCartGood.getTag();
+                    final int count=cart.getCount()+1;
+                    NetDao.updateCartCount(context, cart.getId(), count, new OkHttpUtils.OnCompleteListener<MessageBean>() {
+                        @Override
+                        public void onSuccess(MessageBean result) {
+                            if(result!=null && result.isSuccess()){
+                                cart.setCount(count);
+                                tvGoodsCount.setText(String.valueOf(count));
+                                context.sendBroadcast(new Intent(I.BROADCAST_UPDATE_CART));
+                            }
+                        }
+
+                        @Override
+                        public void onError(String error) {
+
+                        }
+                    });
+                    break;
+                case R.id.ivDeleteGood:
+                    final CartBean cartBean= (CartBean) layoutCartGood.getTag();
+                    final int countDel=cartBean.getCount()-1;
+                    if(countDel>0){
+                        NetDao.updateCartCount(context, cartBean.getId(), countDel, new OkHttpUtils.OnCompleteListener<MessageBean>() {
+                            @Override
+                            public void onSuccess(MessageBean result) {
+                                if(result!=null && result.isSuccess()){
+                                    cartBean.setCount(countDel);
+                                    tvGoodsCount.setText(String.valueOf(countDel));
+                                    context.sendBroadcast(new Intent(I.BROADCAST_UPDATE_CART));
+                                }
+                            }
+
+                            @Override
+                            public void onError(String error) {
+
+                            }
+                        });
+                    }else{
+                        NetDao.deleteCart(context, cartBean.getId(), new OkHttpUtils.OnCompleteListener<MessageBean>() {
+                            @Override
+                            public void onSuccess(MessageBean result) {
+                                if (result!=null && result.isSuccess()){
+                                    list.remove(cartBean);
+                                    notifyDataSetChanged();
+                                    context.sendBroadcast(new Intent(I.BROADCAST_UPDATE_CART));
+                                }
+                            }
+
+                            @Override
+                            public void onError(String error) {
+
+                            }
+                        });
+                    }
+                    break;
+            }
+        }
+
         CartViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
@@ -120,6 +180,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                                             CommonUtils.showShortToast("删除成功");
                                             list.remove(cartBean);
                                             notifyDataSetChanged();
+                                            context.sendBroadcast(new Intent(I.BROADCAST_UPDATE_CART));
                                         }
 
                                         @Override
