@@ -55,6 +55,7 @@ public interface I {
     String DOWNLOAD_AVATAR_URL = "http://101.251.196.90:8000/FuLiCenterServerV2.0/downloadAvatar?";
     String AVATAR_SUFFIX = "m_avatar_suffix";
     int REQUEST_CODE_LOGIN_FROM_CART = 103;
+    String BROADCAST_UPDATE_CART = "fulicenter_broadcast_update_cart";
 
     interface Goods {
         String KEY_RESULT = "result";

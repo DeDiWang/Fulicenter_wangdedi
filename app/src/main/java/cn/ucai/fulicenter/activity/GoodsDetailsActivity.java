@@ -33,7 +33,7 @@ import cn.ucai.fulicenter.view.FlowIndicator;
 import cn.ucai.fulicenter.view.SlideAutoLoopView;
 
 public class GoodsDetailsActivity extends AppCompatActivity {
-
+    private final String TAG = GoodsDetailsActivity.class.getSimpleName();
     @BindView(R.id.ivBack)
     ImageView ivBack;
     @BindView(R.id.tvTitle)
@@ -210,7 +210,7 @@ public class GoodsDetailsActivity extends AppCompatActivity {
 
                             @Override
                             public void onError(String error) {
-
+                                L.e(TAG+" error="+error);
                             }
                         });
                     } else {
@@ -224,7 +224,7 @@ public class GoodsDetailsActivity extends AppCompatActivity {
 
                             @Override
                             public void onError(String error) {
-
+                                L.e(TAG+" error="+error);
                             }
                         });
                     }
@@ -270,15 +270,15 @@ public class GoodsDetailsActivity extends AppCompatActivity {
         if(user==null){
             MFGT.gotoLoginActivity((Activity) context);
         }else{
-            NetDao.addCart(context, goodsId, user.getMuserName(), 1, true, new OkHttpUtils.OnCompleteListener<MessageBean>() {
+            NetDao.addCart(context, goodsId, user.getMuserName(), 1, false, new OkHttpUtils.OnCompleteListener<MessageBean>() {
                 @Override
                 public void onSuccess(MessageBean result) {
-
+                    CommonUtils.showShortToast(getResources().getString(R.string.add_cart_success));
                 }
 
                 @Override
                 public void onError(String error) {
-
+                    L.e(TAG+" error="+error);
                 }
             });
         }

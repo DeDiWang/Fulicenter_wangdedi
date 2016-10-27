@@ -1,7 +1,10 @@
 package cn.ucai.fulicenter.fragment;
 
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -18,9 +21,12 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.ucai.fulicenter.FuLiCenterApplication;
+import cn.ucai.fulicenter.I;
 import cn.ucai.fulicenter.R;
 import cn.ucai.fulicenter.adapter.CartAdapter;
 import cn.ucai.fulicenter.bean.CartBean;
+import cn.ucai.fulicenter.bean.GoodsDetailsBean;
+import cn.ucai.fulicenter.bean.UserAvatar;
 import cn.ucai.fulicenter.net.NetDao;
 import cn.ucai.fulicenter.utils.ConvertUtils;
 import cn.ucai.fulicenter.utils.L;
@@ -63,7 +69,7 @@ public class FragmentCart extends Fragment {
         setListener();
         return view;
     }
-
+    MyBroadcast myBroadcast;
     private void setListener() {
         srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -73,26 +79,38 @@ public class FragmentCart extends Fragment {
                 initData();
             }
         });
+        //注册广播接收者
+        myBroadcast = new MyBroadcast();
+        IntentFilter filter = new IntentFilter(I.BROADCAST_UPDATE_CART);
+        mContext.registerReceiver(myBroadcast,filter);
     }
-
+    //定义广播者类
+    class MyBroadcast extends BroadcastReceiver{
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            sumPrice();
+        }
+    }
     private void initData() {
-        String userName = FuLiCenterApplication.getUser().getMuserName();
-        NetDao.findCarts(mContext, userName, new OkHttpUtils.OnCompleteListener<CartBean[]>() {
-            @Override
-            public void onSuccess(CartBean[] result) {
-                srl.setRefreshing(false);
-                tvRefreshHint.setVisibility(View.GONE);
-                if(result!=null && result.length>0){
-                    ArrayList<CartBean> cartList = ConvertUtils.array2List(result);
-                    mAdapter.initData(cartList);
-                }
-            }
+        UserAvatar user = FuLiCenterApplication.getUser();
+        if(user!=null){
+            NetDao.findCarts(mContext, user.getMuserName(), new OkHttpUtils.OnCompleteListener<CartBean[]>() {
+                @Override
+                public void onSuccess(CartBean[] result) {
+                    srl.setRefreshing(false);
+                    tvRefreshHint.setVisibility(View.GONE);
+                    ArrayList<CartBean> list = ConvertUtils.array2List(result);
+                    mAdapter.initData(list);
 
-            @Override
-            public void onError(String error) {
-                L.e("error===="+error);
-            }
-        });
+                    sumPrice();
+                }
+
+                @Override
+                public void onError(String error) {
+                    L.e("error===="+error);
+                }
+            });
+        }
     }
 
     private void initView() {
@@ -111,4 +129,40 @@ public class FragmentCart extends Fragment {
         rvCartGoods.addItemDecoration(new SpaceItemDecoration(20));
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        initData();
+    }
+
+    //计算购物车商品总价
+    private void sumPrice(){
+        double sum = 0;
+        double rank = 0;
+        if(cartList!=null && cartList.size()>0){
+            for(CartBean c : cartList){
+                GoodsDetailsBean goods = c.getGoods();
+                if(c.isChecked()){
+                    sum += c.getCount() * getPrice(goods.getCurrencyPrice());
+                    rank += c.getCount() * getPrice(goods.getRankPrice());
+                }
+            }
+            tvSum.setText("总计：￥"+ sum);
+            tvSave.setText("节省：￥"+(sum - rank));
+        }else{
+            tvSum.setText("总计：￥0");
+            tvSave.setText("节省：￥0");
+        }
+    }
+    private int getPrice(String str){
+        String s = str.substring(str.indexOf("￥") + 1);
+        int i = Integer.parseInt(s);
+        return i;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mContext.unregisterReceiver(myBroadcast);
+    }
 }

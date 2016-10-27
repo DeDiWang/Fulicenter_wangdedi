@@ -215,4 +215,14 @@ public class NetDao {
                 .targetClass(CartBean[].class)
                 .execute(listener);
     }
+    //http://101.251.196.90:8000/FuLiCenterServerV2.0/deleteCart?id=443
+    //删除购物车中的商品
+    public static void deleteCart(Context context,int id,
+                                  OkHttpUtils.OnCompleteListener<MessageBean> listener){
+        OkHttpUtils<MessageBean> utils = new OkHttpUtils<>(context);
+        utils.setRequestUrl(I.REQUEST_DELETE_CART)
+                .addParam(I.Cart.ID,String.valueOf(id))
+                .targetClass(MessageBean.class)
+                .execute(listener);
+    }
 }
