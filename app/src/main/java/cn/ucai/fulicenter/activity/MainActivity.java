@@ -99,7 +99,11 @@ public class MainActivity extends AppCompatActivity {
                 index = 2;
                 break;
             case R.id.rbCart:
-                index = 3;
+                if(FuLiCenterApplication.getUser()==null){
+                    startActivityForResult(new Intent(this,LoginActivity.class),I.REQUEST_CODE_LOGIN_FROM_CART);
+                }else{
+                    index = 3;
+                }
                 break;
             case R.id.rbPersonalCenter:
                 if(FuLiCenterApplication.getUser()==null){
@@ -150,8 +154,13 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         L.e("MainActivity.onActivityResult requestCode=="+requestCode);
         //判断是否是从登录页面跳转回来的
-        if(requestCode == I.REQUEST_CODE_LOGIN && FuLiCenterApplication.getUser()!=null){
-            index=4;
+        if(FuLiCenterApplication.getUser()!=null){
+            if(requestCode == I.REQUEST_CODE_LOGIN ){
+                index=4;
+            }
+            if(requestCode ==I.REQUEST_CODE_LOGIN_FROM_CART){
+                index=3;
+            }
         }
     }
 }
