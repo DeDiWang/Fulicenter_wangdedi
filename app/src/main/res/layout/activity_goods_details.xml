@@ -31,6 +31,7 @@
             android:layout_height="match_parent"
             android:src="@mipmap/bg_share_nor"
             android:padding="8dp"
+            android:layout_marginRight="5dp"
             android:layout_alignParentRight="true"/>
         <ImageView
             android:id="@+id/ivCollect"
@@ -38,29 +39,16 @@
             android:layout_height="match_parent"
             android:src="@mipmap/bg_collect_in"
             android:padding="8dp"
+            android:layout_marginRight="5dp"
             android:layout_toLeftOf="@+id/ivShare"/>
-        <RelativeLayout
-            android:layout_toLeftOf="@+id/ivCollect"
-            android:layout_toRightOf="@+id/tvTitle"
+        <ImageView
+            android:id="@+id/ivCart"
+            android:src="@mipmap/bg_cart_selected"
+            android:padding="8dp"
+            android:layout_marginRight="5dp"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent">
-            <ImageView
-                android:id="@+id/ivCart"
-                android:src="@mipmap/bg_cart_selected"
-                android:padding="8dp"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentRight="true"/>
-            <TextView
-                android:id="@+id/tvCartCount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="10"
-                android:padding="2dp"
-                android:textColor="#36f"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentTop="true"/>
-        </RelativeLayout>
+            android:layout_height="match_parent"
+            android:layout_toLeftOf="@id/ivCollect"/>
     </RelativeLayout>
     <RelativeLayout
         android:id="@+id/layout_content"

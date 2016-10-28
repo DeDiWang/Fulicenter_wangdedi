@@ -28,10 +28,18 @@
                 android:id="@+id/rvCartGoods"/>
         </LinearLayout>
     </android.support.v4.widget.SwipeRefreshLayout>
+    <TextView
+        android:id="@+id/tvNoting"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="购物车空空如也"
+        android:textSize="25dp"
+        android:gravity="center"/>
     <RelativeLayout
+        android:id="@+id/layout_bottom"
         android:layout_width="match_parent"
         android:layout_height="65dp"
-        android:layout_marginBottom="3dp">
+        >
         <TextView
             android:id="@+id/tvSum"
             android:layout_width="wrap_content"

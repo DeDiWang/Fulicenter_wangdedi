@@ -27,6 +27,7 @@ import cn.ucai.fulicenter.net.NetDao;
 import cn.ucai.fulicenter.utils.CommonUtils;
 import cn.ucai.fulicenter.utils.ImageLoader;
 import cn.ucai.fulicenter.utils.L;
+import cn.ucai.fulicenter.utils.MFGT;
 import cn.ucai.fulicenter.utils.OkHttpUtils;
 
 /**
@@ -98,6 +99,13 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         @BindView(R.id.layout_cart_good)
         RelativeLayout layoutCartGood;
 
+        //进入商品详情的监听事件
+        @OnClick({R.id.tvCartGoodName,R.id.tvGoodsSum,R.id.ivGoodThumb})
+        public void onClickToDetails(View view){
+            CartBean cart = (CartBean) layoutCartGood.getTag();
+            MFGT.gotoDetailsActivity(context,cart.getGoodsId());
+        }
+        //增加减少商品数量
         @OnClick({R.id.ivAddGood, R.id.ivDeleteGood})
         public void onClick(View view) {
             switch (view.getId()) {
@@ -170,7 +178,8 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 public boolean onLongClick(View view) {
                     final CartBean cartBean = (CartBean) layoutCartGood.getTag();
                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                    AlertDialog dialog = builder.setTitle("将该商品从购物车中删除？")
+                    AlertDialog dialog = builder.setTitle("真的忍心抛弃我么？")
+                            .setMessage("")
                             .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {

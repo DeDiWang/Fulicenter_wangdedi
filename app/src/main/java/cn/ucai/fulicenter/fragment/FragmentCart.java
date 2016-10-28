@@ -8,12 +8,12 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -53,6 +53,11 @@ public class FragmentCart extends Fragment {
     ArrayList<CartBean> cartList;
     CartAdapter mAdapter;
     LinearLayoutManager layoutManager;
+    @BindView(R.id.tvNoting)
+    TextView tvNoting;
+    @BindView(R.id.layout_bottom)
+    RelativeLayout layoutBottom;
+
     public FragmentCart() {
         // Required empty public constructor
     }
@@ -63,13 +68,15 @@ public class FragmentCart extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_cart, container, false);
         ButterKnife.bind(this, view);
-        mContext=getContext();
+        mContext = getContext();
         initView();
         initData();
         setListener();
         return view;
     }
+
     MyBroadcast myBroadcast;
+
     private void setListener() {
         srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -82,34 +89,50 @@ public class FragmentCart extends Fragment {
         //注册广播接收者
         myBroadcast = new MyBroadcast();
         IntentFilter filter = new IntentFilter(I.BROADCAST_UPDATE_CART);
-        mContext.registerReceiver(myBroadcast,filter);
+        mContext.registerReceiver(myBroadcast, filter);
     }
+
     //定义广播者类
-    class MyBroadcast extends BroadcastReceiver{
+    class MyBroadcast extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             sumPrice();
         }
     }
+
     private void initData() {
         UserAvatar user = FuLiCenterApplication.getUser();
-        if(user!=null){
+        if (user != null) {
             NetDao.findCarts(mContext, user.getMuserName(), new OkHttpUtils.OnCompleteListener<CartBean[]>() {
                 @Override
                 public void onSuccess(CartBean[] result) {
                     srl.setRefreshing(false);
                     tvRefreshHint.setVisibility(View.GONE);
                     ArrayList<CartBean> list = ConvertUtils.array2List(result);
-                    mAdapter.initData(list);
-
+                    if (list != null && list.size() > 0) {
+                        mAdapter.initData(list);
+                        setCartLayout(true);
+                    } else {
+                        setCartLayout(false);
+                    }
                     sumPrice();
                 }
 
                 @Override
                 public void onError(String error) {
-                    L.e("error===="+error);
+                    L.e("error====" + error);
                 }
             });
+        }
+    }
+
+    public void setCartLayout(boolean hasCart) {
+        if (hasCart) {
+            tvNoting.setVisibility(View.GONE);
+            layoutBottom.setVisibility(View.VISIBLE);
+        }else{
+            tvNoting.setVisibility(View.VISIBLE);
+            layoutBottom.setVisibility(View.GONE);
         }
     }
 
@@ -120,10 +143,10 @@ public class FragmentCart extends Fragment {
                 getResources().getColor(R.color.red),
                 getResources().getColor(R.color.google_yellow)
         );
-        cartList=new ArrayList<>();
-        mAdapter=new CartAdapter(mContext,cartList);
+        cartList = new ArrayList<>();
+        mAdapter = new CartAdapter(mContext, cartList);
         rvCartGoods.setAdapter(mAdapter);
-        layoutManager=new LinearLayoutManager(mContext);
+        layoutManager = new LinearLayoutManager(mContext);
         rvCartGoods.setLayoutManager(layoutManager);
         rvCartGoods.setHasFixedSize(true);
         rvCartGoods.addItemDecoration(new SpaceItemDecoration(20));
@@ -136,25 +159,27 @@ public class FragmentCart extends Fragment {
     }
 
     //计算购物车商品总价
-    private void sumPrice(){
+    private void sumPrice() {
         double sum = 0;
         double rank = 0;
-        if(cartList!=null && cartList.size()>0){
-            for(CartBean c : cartList){
+        if (cartList != null && cartList.size() > 0) {
+            for (CartBean c : cartList) {
                 GoodsDetailsBean goods = c.getGoods();
-                if(c.isChecked()){
+                if (c.isChecked()) {
                     sum += c.getCount() * getPrice(goods.getCurrencyPrice());
                     rank += c.getCount() * getPrice(goods.getRankPrice());
                 }
             }
-            tvSum.setText("总计：￥"+ sum);
-            tvSave.setText("节省：￥"+(sum - rank));
-        }else{
+            tvSum.setText("总计：￥" + sum);
+            tvSave.setText("节省：￥" + (sum - rank));
+        } else {
+            setCartLayout(false);
             tvSum.setText("总计：￥0");
             tvSave.setText("节省：￥0");
         }
     }
-    private int getPrice(String str){
+
+    private int getPrice(String str) {
         String s = str.substring(str.indexOf("￥") + 1);
         int i = Integer.parseInt(s);
         return i;
