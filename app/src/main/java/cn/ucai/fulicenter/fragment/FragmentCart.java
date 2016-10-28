@@ -168,7 +168,6 @@ public class FragmentCart extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        cartIds="";
         initData();
     }
 

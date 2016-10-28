@@ -54,8 +54,8 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         final CartBean cartBean = list.get(position);
         GoodsDetailsBean goods = cartBean.getGoods();
         CartViewHolder cartViewHolder = (CartViewHolder) holder;
-        cartViewHolder.ivSelect.setChecked(false);
         cartViewHolder.tvGoodsCount.setText(String.valueOf(cartBean.getCount()));
+        cartViewHolder.ivSelect.setChecked(cartBean.isChecked());
         if (goods != null) {
             ImageLoader.downloadImg(context, cartViewHolder.ivGoodThumb, goods.getGoodsThumb());
             cartViewHolder.tvCartGoodName.setText(goods.getGoodsName());
@@ -68,6 +68,18 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 cartBean.setChecked(b);
                 context.sendBroadcast(new Intent(I.BROADCAST_UPDATE_CART));
+                //向服务器更新按钮状态
+                NetDao.updateCartCount(context, cartBean.getId(), cartBean.getCount(), b, new OkHttpUtils.OnCompleteListener<MessageBean>() {
+                    @Override
+                    public void onSuccess(MessageBean result) {
+                        L.e("向服务器更新按钮状态成功。。。。。。。。。。。。");
+                    }
+
+                    @Override
+                    public void onError(String error) {
+
+                    }
+                });
             }
         });
     }
@@ -78,7 +90,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     public void initData(ArrayList<CartBean> cartList) {
-        if (list != null) {
+        if(list!=null && list.size()>0){
             list.clear();
         }
         list.addAll(cartList);
@@ -112,7 +124,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 case R.id.ivAddGood:
                     final CartBean cart= (CartBean) layoutCartGood.getTag();
                     final int count=cart.getCount()+1;
-                    NetDao.updateCartCount(context, cart.getId(), count, new OkHttpUtils.OnCompleteListener<MessageBean>() {
+                    NetDao.updateCartCount(context, cart.getId(), count,cart.isChecked(), new OkHttpUtils.OnCompleteListener<MessageBean>() {
                         @Override
                         public void onSuccess(MessageBean result) {
                             if(result!=null && result.isSuccess()){
@@ -132,7 +144,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     final CartBean cartBean= (CartBean) layoutCartGood.getTag();
                     final int countDel=cartBean.getCount()-1;
                     if(countDel>0){
-                        NetDao.updateCartCount(context, cartBean.getId(), countDel, new OkHttpUtils.OnCompleteListener<MessageBean>() {
+                        NetDao.updateCartCount(context, cartBean.getId(), countDel,cartBean.isChecked(), new OkHttpUtils.OnCompleteListener<MessageBean>() {
                             @Override
                             public void onSuccess(MessageBean result) {
                                 if(result!=null && result.isSuccess()){
