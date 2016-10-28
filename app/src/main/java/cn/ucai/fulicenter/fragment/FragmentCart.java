@@ -20,14 +20,17 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import cn.ucai.fulicenter.FuLiCenterApplication;
 import cn.ucai.fulicenter.I;
 import cn.ucai.fulicenter.R;
+import cn.ucai.fulicenter.activity.AddressActivity;
 import cn.ucai.fulicenter.adapter.CartAdapter;
 import cn.ucai.fulicenter.bean.CartBean;
 import cn.ucai.fulicenter.bean.GoodsDetailsBean;
 import cn.ucai.fulicenter.bean.UserAvatar;
 import cn.ucai.fulicenter.net.NetDao;
+import cn.ucai.fulicenter.utils.CommonUtils;
 import cn.ucai.fulicenter.utils.ConvertUtils;
 import cn.ucai.fulicenter.utils.L;
 import cn.ucai.fulicenter.utils.OkHttpUtils;
@@ -92,6 +95,16 @@ public class FragmentCart extends Fragment {
         mContext.registerReceiver(myBroadcast, filter);
     }
 
+    @OnClick(R.id.btnBuy)
+    public void onClick() {
+        if(orderPrice>0 && cartIds.length()>0 && !cartIds.equals("")){
+            startActivity(new Intent(mContext, AddressActivity.class)
+                    .putExtra("cartIds",cartIds).putExtra("orderPrice",orderPrice));
+        }else{
+            CommonUtils.showShortToast(getResources().getString(R.string.noting_to_buy));
+        }
+    }
+
     //定义广播者类
     class MyBroadcast extends BroadcastReceiver {
         @Override
@@ -130,7 +143,7 @@ public class FragmentCart extends Fragment {
         if (hasCart) {
             tvNoting.setVisibility(View.GONE);
             layoutBottom.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             tvNoting.setVisibility(View.VISIBLE);
             layoutBottom.setVisibility(View.GONE);
         }
@@ -155,8 +168,12 @@ public class FragmentCart extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        cartIds="";
         initData();
     }
+
+    double orderPrice;
+    String cartIds = "";
 
     //计算购物车商品总价
     private void sumPrice() {
@@ -168,11 +185,14 @@ public class FragmentCart extends Fragment {
                 if (c.isChecked()) {
                     sum += c.getCount() * getPrice(goods.getCurrencyPrice());
                     rank += c.getCount() * getPrice(goods.getRankPrice());
+                    cartIds += c.getId() + ",";
                 }
             }
-            tvSum.setText("总计：￥" + sum);
+            orderPrice = rank;
+            tvSum.setText("总计：￥" + rank);
             tvSave.setText("节省：￥" + (sum - rank));
         } else {
+            orderPrice = 0;
             setCartLayout(false);
             tvSum.setText("总计：￥0");
             tvSave.setText("节省：￥0");

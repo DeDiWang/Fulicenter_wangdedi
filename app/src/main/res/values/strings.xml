@@ -18,4 +18,5 @@
     <string name="update_user_avatar">update_user_avatar_ing</string>
     <string name="delete_collect_fail">delete collect fail</string>
     <string name="add_cart_success">add cart success</string>
+    <string name="noting_to_buy">noting_to_buy</string>
 </resources>

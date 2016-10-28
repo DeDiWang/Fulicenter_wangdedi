@@ -44,8 +44,6 @@ public class GoodsDetailsActivity extends AppCompatActivity {
     ImageView ivCollect;
     @BindView(R.id.ivCart)
     ImageView ivCart;
-    @BindView(R.id.tvCartCount)
-    TextView tvCartCount;
     @BindView(R.id.tvGoodEnglishName)
     TextView tvGoodEnglishName;
     @BindView(R.id.tvGoodName)
